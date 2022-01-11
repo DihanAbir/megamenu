@@ -43,9 +43,12 @@ function Menu({ JsonData }) {
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
 
+  const [selectionArray, setSelectionArray] = useState([]);
+
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
 
   useEffect(() => {}, [selectedEventId]);
+  console.log("selectionArray", selectionArray);
   return (
     <div style={{ position: "relative" }} className="App">
       {initialItem.map((item) => (
@@ -59,56 +62,65 @@ function Menu({ JsonData }) {
           }}
         >
           <div style={{}}>
-            {data.filter((item1) => item1.parentTypeId === item.parentTypeId)
-              .length > 1 && (
-              <div style={{ position: "absolute", left: "10px" }}>
-                {selectedEventId !== item.extContentTypeId ||
-                selectedEvent !== true ? (
-                  <ArrowRightIcon />
-                ) : (
-                  <ArrowLeftIcon />
-                )}
-              </div>
-            )}
-            <small style={{ position: "absolute", right: "100px" }}>
-              <input
-                onChange={(e) => {
-                  seteventTypeId(item.eventTypeId);
-                  setselectedEvent(true);
-                  selectedEventId === null
-                    ? setselectedEventId(item.extContentTypeId)
-                    : setselectedEventId(null);
-                  setTimeout(() => {
-                    handleParentClick(e);
-                  }, 10);
-                }}
-                // onClick={}
-                type="checkbox"
-              />
-            </small>
+            <div>
+              {data.filter((item1) => item1.parentTypeId === item.parentTypeId)
+                .length > 1 && (
+                <div style={{ position: "absolute", left: "10px" }}>
+                  {selectedEventId !== item.extContentTypeId ||
+                  selectedEvent !== true ? (
+                    <ArrowRightIcon />
+                  ) : (
+                    <ArrowLeftIcon />
+                  )}
+                </div>
+              )}
 
-            {/* //1st layer data  */}
-            <small
-              style={{
-                border: "1px solid #9f88ff",
-                borderRadius: "5px",
-                // padding: "10px",
-                textAlign: "left",
-              }}
-              onClick={(e) => {
-                seteventTypeId(item.eventTypeId);
-                setselectedEvent(!selectedEvent);
-                setselectedEventId(item.extContentTypeId);
-              }}
-            >
-              {item.eventTypeName}
-            </small>
+              {/* //1st layer data  */}
+              <small
+                style={{
+                  border: "1px solid #9f88ff",
+                  borderRadius: "5px",
+                  // padding: "10px",
+                  textAlign: "left",
+                }}
+                onClick={(e) => {
+                  seteventTypeId(item.eventTypeId);
+                  setselectedEvent(!selectedEvent);
+                  setselectedEventId(item.extContentTypeId);
+                }}
+              >
+                {item.eventTypeName}
+              </small>
+              <small style={{ position: "absolute", right: "100px" }}>
+                <input
+                  onChange={(e) => {
+                    seteventTypeId(item.eventTypeId);
+                    setselectedEvent(true);
+
+                    setSelectionArray([
+                      ...selectionArray,
+                      item.extContentTypeId,
+                    ]);
+                    selectedEventId === null
+                      ? setselectedEventId(item.extContentTypeId)
+                      : setselectedEventId(null);
+                    setTimeout(() => {
+                      handleParentClick(e);
+                    }, 10);
+                  }}
+                  // onClick={}
+                  type="checkbox"
+                />
+              </small>
+            </div>
 
             {selectedEventId === item.extContentTypeId &&
               selectedEvent &&
               JsonData.filter((item1) => item1.parentTypeId === eventTypeId)
                 .length > 0 && (
                 <SubMenu
+                  setSelectionArray={setSelectionArray}
+                  selectionArray={selectionArray}
                   JsonData={JsonData.filter(
                     (item1) => item1.parentTypeId === eventTypeId
                   )}
@@ -125,7 +137,7 @@ function Menu({ JsonData }) {
   );
 }
 
-function SubMenu({ JsonData }) {
+function SubMenu({ JsonData, setSelectionArray, selectionArray }) {
   const [eventTypeId, seteventTypeId] = useState(null);
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
@@ -145,36 +157,48 @@ function SubMenu({ JsonData }) {
           }}
         >
           <div style={{}}>
-            <div style={{ position: "absolute", left: "10px" }}>
-              {data.filter((item1) => item1.parentTypeId === item.eventTypeId)
-                .length > 0 && (
-                <>
-                  {selectedEventId !== item.extContentTypeId ||
-                  selectedEvent !== true ? (
-                    <ArrowRightIcon />
-                  ) : (
-                    <ArrowLeftIcon />
-                  )}
-                </>
-              )}
+            <div>
+              <div style={{ position: "absolute", left: "10px" }}>
+                {data.filter((item1) => item1.parentTypeId === item.eventTypeId)
+                  .length > 0 && (
+                  <>
+                    {selectedEventId !== item.extContentTypeId ||
+                    selectedEvent !== true ? (
+                      <ArrowRightIcon />
+                    ) : (
+                      <ArrowLeftIcon />
+                    )}
+                  </>
+                )}
+              </div>
+
+              <small
+                style={{
+                  border: "1px solid #9f88ff",
+                  borderRadius: "5px",
+                  textAlign: "left",
+                }}
+                onClick={() => {
+                  seteventTypeId(item.eventTypeId);
+                  setselectedEvent(!selectedEvent);
+                  setselectedEventId(item.extContentTypeId);
+                }}
+              >
+                {item.eventTypeName}
+              </small>
+              <small style={{ position: "absolute", right: "100px" }}>
+                <input
+                  onChange={(e) => {
+                    handleParentClick(e);
+                    setSelectionArray([
+                      ...selectionArray,
+                      item.extContentTypeId,
+                    ]);
+                  }}
+                  type="checkbox"
+                />
+              </small>
             </div>
-            <small style={{ position: "absolute", right: "100px" }}>
-              <input onChange={(e) => handleParentClick(e)} type="checkbox" />
-            </small>
-            <small
-              style={{
-                border: "1px solid #9f88ff",
-                borderRadius: "5px",
-                textAlign: "left",
-              }}
-              onClick={() => {
-                seteventTypeId(item.eventTypeId);
-                setselectedEvent(!selectedEvent);
-                setselectedEventId(item.extContentTypeId);
-              }}
-            >
-              {item.eventTypeName}
-            </small>
 
             {selectedEventId === item.extContentTypeId &&
               selectedEvent &&
