@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 ul {
   list-style-type: none;
   margin: 0;
@@ -13,6 +17,39 @@ ul {
 .mainSection {
   width: 800px;
   align-items: center;
-  background: rgb(227 227 227);
+  /* background: rgb(227 227 227); */
   margin: 0 auto;
+  background-color: lightyellow;
+  padding: 1rem;
+}
+
+.singleContainer .header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0.5rem;
+  border: 0.3px solid gray;
+}
+
+.singleContainer .parent {
+  /* border: 1px solid; */
+}
+
+.singleContainer .header .icon {
+  flex-basis: 10%;
+  position: absolute;
+}
+.singleContainer .header .eventName {
+  flex-basis: 90%;
+  cursor: pointer;
+  text-align: start;
+  padding-left: 5%;
+}
+.singleContainer .header .eventInput {
+  flex-basis: 10%;
+}
+
+/* sub container  */
+.subContainer {
+  padding-left: 10%;
 }

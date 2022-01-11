@@ -19,9 +19,13 @@ function App() {
 
 function handleParentClick(e) {
   try {
-    let allInput = e.target.parentElement.parentElement
-      .querySelector(".App")
-      .querySelectorAll("input");
+    let allInput = e.target
+      .closest(".header")
+      .nextSibling.querySelectorAll("input");
+    console.log(allInput);
+    // .querySelector(".App")
+    // .querySelectorAll("input");
+
     // console.log(allInput);
     if (e.target.checked) {
       allInput.forEach((item) => {
@@ -50,22 +54,14 @@ function Menu({ JsonData }) {
   useEffect(() => {}, [selectedEventId]);
   console.log("selectionArray", selectionArray);
   return (
-    <div style={{ position: "relative" }} className="App">
+    <div className="App">
       {initialItem.map((item) => (
-        <div
-          key={item.extContentTypeId}
-          style={{
-            border: "1px solid #9f88ff",
-            margin: "25px",
-            marginLeft: "30px",
-            textAlign: "left",
-          }}
-        >
-          <div style={{}}>
-            <div>
+        <div className="singleContainer" key={item.extContentTypeId}>
+          <div className="parent">
+            <div className="header">
               {data.filter((item1) => item1.parentTypeId === item.parentTypeId)
                 .length > 1 && (
-                <div style={{ position: "absolute", left: "10px" }}>
+                <div className="icon">
                   {selectedEventId !== item.extContentTypeId ||
                   selectedEvent !== true ? (
                     <ArrowRightIcon />
@@ -77,12 +73,7 @@ function Menu({ JsonData }) {
 
               {/* //1st layer data  */}
               <small
-                style={{
-                  border: "1px solid #9f88ff",
-                  borderRadius: "5px",
-                  // padding: "10px",
-                  textAlign: "left",
-                }}
+                className="eventName"
                 onClick={(e) => {
                   seteventTypeId(item.eventTypeId);
                   setselectedEvent(!selectedEvent);
@@ -91,16 +82,34 @@ function Menu({ JsonData }) {
               >
                 {item.eventTypeName}
               </small>
-              <small style={{ position: "absolute", right: "100px" }}>
+              <small className="eventInput">
                 <input
                   onChange={(e) => {
                     seteventTypeId(item.eventTypeId);
                     setselectedEvent(true);
+                    const isExist = selectionArray.find(
+                      (selectedItme) => selectedItme === item.extContentTypeId
+                    );
+                    // check exiting  on array or not
+                    !isExist &&
+                      setSelectionArray([
+                        ...selectionArray,
+                        item.extContentTypeId,
+                      ]);
 
-                    setSelectionArray([
-                      ...selectionArray,
-                      item.extContentTypeId,
-                    ]);
+                    const LeftSelection =
+                      item.parentTypeId === null &&
+                      data.filter((i) => i.parentTypeId === item.eventTypeId);
+
+                    console.log("LeftSelection", LeftSelection);
+
+                    LeftSelection.map((single) => {
+                      setSelectionArray([
+                        ...selectionArray,
+                        single.extContentTypeId,
+                      ]);
+                    });
+
                     selectedEventId === null
                       ? setselectedEventId(item.extContentTypeId)
                       : setselectedEventId(null);
@@ -145,39 +154,30 @@ function SubMenu({ JsonData, setSelectionArray, selectionArray }) {
   console.log("event id: ", eventTypeId, selectedEventId);
   console.log("JsonData", JsonData);
   return (
-    <div style={{ position: "relative" }} className="App">
+    <div className="App">
       {JsonData.map((item) => (
         <div
+          className="singleContainer subContainer"
           key={item.extContentTypeId}
-          style={{
-            border: "1px solid #9f88ff",
-            margin: "25px",
-            marginLeft: "30px",
-            textAlign: "left",
-          }}
         >
-          <div style={{}}>
-            <div>
-              <div style={{ position: "absolute", left: "10px" }}>
+          <div className="parent">
+            <div className="header">
+              <div className="arrow">
                 {data.filter((item1) => item1.parentTypeId === item.eventTypeId)
                   .length > 0 && (
-                  <>
+                  <div className="icon">
                     {selectedEventId !== item.extContentTypeId ||
                     selectedEvent !== true ? (
                       <ArrowRightIcon />
                     ) : (
                       <ArrowLeftIcon />
                     )}
-                  </>
+                  </div>
                 )}
               </div>
 
               <small
-                style={{
-                  border: "1px solid #9f88ff",
-                  borderRadius: "5px",
-                  textAlign: "left",
-                }}
+                className="eventName"
                 onClick={() => {
                   seteventTypeId(item.eventTypeId);
                   setselectedEvent(!selectedEvent);
@@ -186,7 +186,7 @@ function SubMenu({ JsonData, setSelectionArray, selectionArray }) {
               >
                 {item.eventTypeName}
               </small>
-              <small style={{ position: "absolute", right: "100px" }}>
+              <small className="eventInput">
                 <input
                   onChange={(e) => {
                     handleParentClick(e);
