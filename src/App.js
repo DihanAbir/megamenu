@@ -1,7 +1,8 @@
 import "./App.css";
 import data from "./data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowLeftIcon from "@mui/icons-material/ArrowDropDown";
 
 function App() {
   return (
@@ -16,6 +17,26 @@ function App() {
   );
 }
 
+function handleParentClick(e) {
+  try {
+    let allInput = e.target.parentElement.parentElement
+      .querySelector(".App")
+      .querySelectorAll("input");
+    // console.log(allInput);
+    if (e.target.checked) {
+      allInput.forEach((item) => {
+        item.checked = true;
+      });
+    } else {
+      allInput.forEach((item) => {
+        item.checked = false;
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 function Menu({ JsonData }) {
   //states
   const [eventTypeId, seteventTypeId] = useState(null);
@@ -23,6 +44,8 @@ function Menu({ JsonData }) {
   const [selectedEventId, setselectedEventId] = useState(null);
 
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
+
+  useEffect(() => {}, [selectedEventId]);
   return (
     <div style={{ position: "relative" }} className="App">
       {initialItem.map((item) => (
@@ -39,11 +62,29 @@ function Menu({ JsonData }) {
             {data.filter((item1) => item1.parentTypeId === item.parentTypeId)
               .length > 1 && (
               <div style={{ position: "absolute", left: "10px" }}>
-                <ArrowRightIcon />
+                {selectedEventId !== item.extContentTypeId ||
+                selectedEvent !== true ? (
+                  <ArrowRightIcon />
+                ) : (
+                  <ArrowLeftIcon />
+                )}
               </div>
             )}
             <small style={{ position: "absolute", right: "100px" }}>
-              <input type="checkbox" />
+              <input
+                onChange={(e) => {
+                  seteventTypeId(item.eventTypeId);
+                  setselectedEvent(true);
+                  selectedEventId === null
+                    ? setselectedEventId(item.extContentTypeId)
+                    : setselectedEventId(null);
+                  setTimeout(() => {
+                    handleParentClick(e);
+                  }, 10);
+                }}
+                // onClick={}
+                type="checkbox"
+              />
             </small>
 
             {/* //1st layer data  */}
@@ -54,7 +95,7 @@ function Menu({ JsonData }) {
                 // padding: "10px",
                 textAlign: "left",
               }}
-              onClick={() => {
+              onClick={(e) => {
                 seteventTypeId(item.eventTypeId);
                 setselectedEvent(!selectedEvent);
                 setselectedEventId(item.extContentTypeId);
@@ -95,7 +136,7 @@ function SubMenu({ JsonData }) {
     <div style={{ position: "relative" }} className="App">
       {JsonData.map((item) => (
         <div
-          key={item}
+          key={item.extContentTypeId}
           style={{
             border: "1px solid #9f88ff",
             margin: "25px",
@@ -106,10 +147,19 @@ function SubMenu({ JsonData }) {
           <div style={{}}>
             <div style={{ position: "absolute", left: "10px" }}>
               {data.filter((item1) => item1.parentTypeId === item.eventTypeId)
-                .length > 0 && <ArrowRightIcon />}
+                .length > 0 && (
+                <>
+                  {selectedEventId !== item.extContentTypeId ||
+                  selectedEvent !== true ? (
+                    <ArrowRightIcon />
+                  ) : (
+                    <ArrowLeftIcon />
+                  )}
+                </>
+              )}
             </div>
             <small style={{ position: "absolute", right: "100px" }}>
-              <input type="checkbox" />
+              <input onChange={(e) => handleParentClick(e)} type="checkbox" />
             </small>
             <small
               style={{
