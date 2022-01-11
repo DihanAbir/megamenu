@@ -22,17 +22,11 @@ function Menu({ JsonData }) {
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
 
-  const [checkboxSeection, setCheckboxSeection] = useState(null);
-
-  console.log("checkboxSeection", checkboxSeection);
-
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
   return (
     <div style={{ position: "relative" }} className="App">
       {initialItem.map((item) => (
         <div
-          className="singleDiv"
-          id={(item.extContentTypeId, item.eventTypeId)}
           key={item.extContentTypeId}
           style={{
             border: "1px solid #9f88ff",
@@ -48,6 +42,9 @@ function Menu({ JsonData }) {
                 <ArrowRightIcon />
               </div>
             )}
+            <small style={{ position: "absolute", right: "100px" }}>
+              <input type="checkbox" />
+            </small>
 
             {/* //1st layer data  */}
             <small
@@ -71,35 +68,15 @@ function Menu({ JsonData }) {
               JsonData.filter((item1) => item1.parentTypeId === eventTypeId)
                 .length > 0 && (
                 <SubMenu
-                  seteventTypeId={seteventTypeId}
-                  eventTypeId={eventTypeId}
-                  selectedEvent={selectedEvent}
-                  setselectedEvent={setselectedEvent}
-                  selectedEventId={selectedEventId}
-                  setselectedEventId={setselectedEventId}
-                  checkboxSeection={checkboxSeection}
-                  setCheckboxSeection={setCheckboxSeection}
                   JsonData={JsonData.filter(
                     (item1) => item1.parentTypeId === eventTypeId
                   )}
                 />
               )}
 
-            <small style={{ position: "absolute", right: "100px" }}>
-              {data.find((item1) => item1.parentTypeId === checkboxSeection) ? (
-                <input
-                  type="checkbox"
-                  // checked
-                  onChange={() => setCheckboxSeection(item.eventTypeId)}
-                />
-              ) : (
-                <input
-                  type="checkbox"
-                  checked
-                  onChange={() => setCheckboxSeection(item.eventTypeId)}
-                />
-              )}
-            </small>
+            {/* <small style={{ position: "absolute", right: "100px" }}>
+              <input type="checkbox" />
+            </small> */}
           </div>
         </div>
       ))}
@@ -107,28 +84,18 @@ function Menu({ JsonData }) {
   );
 }
 
-function SubMenu({
-  JsonData,
-  seteventTypeId,
-  eventTypeId,
-  selectedEvent,
-  setselectedEvent,
-  selectedEventId,
-  setselectedEventId,
-  setCheckboxSeection,
-  checkboxSeection,
-}) {
-  // const [eventTypeId, seteventTypeId] = useState(null);
-  // const [selectedEvent, setselectedEvent] = useState(false);
+function SubMenu({ JsonData }) {
+  const [eventTypeId, seteventTypeId] = useState(null);
+  const [selectedEvent, setselectedEvent] = useState(false);
+  const [selectedEventId, setselectedEventId] = useState(null);
 
   console.log("event id: ", eventTypeId, selectedEventId);
   console.log("JsonData", JsonData);
-  console.log("checkboxSeection", checkboxSeection);
   return (
     <div style={{ position: "relative" }} className="App">
       {JsonData.map((item) => (
         <div
-          key={item.extContentTypeId}
+          key={item}
           style={{
             border: "1px solid #9f88ff",
             margin: "25px",
@@ -141,6 +108,9 @@ function SubMenu({
               {data.filter((item1) => item1.parentTypeId === item.eventTypeId)
                 .length > 0 && <ArrowRightIcon />}
             </div>
+            <small style={{ position: "absolute", right: "100px" }}>
+              <input type="checkbox" />
+            </small>
             <small
               style={{
                 border: "1px solid #9f88ff",
@@ -167,12 +137,9 @@ function SubMenu({
                 />
               )}
 
-            <small style={{ position: "absolute", right: "100px" }}>
-              <input
-                type="checkbox"
-                onChange={() => setCheckboxSeection(selectedEventId)}
-              />
-            </small>
+            {/* <small style={{ position: "absolute", right: "100px" }}>
+              <input type="checkbox" />
+            </small> */}
           </div>
         </div>
       ))}
