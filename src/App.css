@@ -31,9 +31,9 @@ ul {
   border: 0.3px solid gray;
 }
 
-.singleContainer .parent {
-  /* border: 1px solid; */
-}
+/* .singleContainer .parent { */
+/* border: 1px solid; */
+/* } */
 
 .singleContainer .header .icon {
   flex-basis: 10%;

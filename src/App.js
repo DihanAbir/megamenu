@@ -52,7 +52,7 @@ function Menu({ JsonData }) {
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
 
   useEffect(() => {}, [selectedEventId]);
-  console.log("selectionArray", selectionArray);
+  console.log("selectionArray by checkbox clickeing ", selectionArray);
   return (
     <div className="App">
       {initialItem.map((item) => (
@@ -103,12 +103,7 @@ function Menu({ JsonData }) {
 
                     console.log("LeftSelection", LeftSelection);
 
-                    LeftSelection.map((single) => {
-                      setSelectionArray([
-                        ...selectionArray,
-                        single.extContentTypeId,
-                      ]);
-                    });
+                    setSelectionArray([...selectionArray, ...LeftSelection]);
 
                     selectedEventId === null
                       ? setselectedEventId(item.extContentTypeId)
