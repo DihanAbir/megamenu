@@ -17,30 +17,30 @@ function App() {
   );
 }
 
-function handleParentClick(e) {
-  try {
-    let allInput = e.target
-      .closest(".header")
-      .nextSibling.querySelectorAll("input");
-    console.log(allInput);
-    // .querySelector(".App")
-    // .querySelectorAll("input");
+// function handleParentClick(e) {
+//   try {
+//     let allInput = e.target
+//       .closest(".header")
+//       .nextSibling.querySelectorAll("input");
+//     console.log(allInput);
+//     // .querySelector(".App")
+//     // .querySelectorAll("input");
 
-    // console.log(allInput);
-    if (e.target.checked) {
-      allInput.forEach((item) => {
-        item.checked = true;
-      });
-    } else {
-      allInput.forEach((item) => {
-        console.log("item", item);
-        item.checked = false;
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
+//     // console.log(allInput);
+//     if (e.target.checked) {
+//       allInput.forEach((item) => {
+//         item.checked = true;
+//       });
+//     } else {
+//       allInput.forEach((item) => {
+//         console.log("item", item);
+//         item.checked = false;
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 function Menu({ JsonData }) {
   //states
@@ -54,7 +54,7 @@ function Menu({ JsonData }) {
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
 
   useEffect(() => {}, [selectedEventId]);
-  console.log("selectionArray by checkbox clickeing ", selectionArray);
+  // console.log("selectionArray by checkbox clickeing ", selectionArray);
   return (
     <div className="App">
       {initialItem.map((item) => (
@@ -94,10 +94,10 @@ function Menu({ JsonData }) {
                 </span>
               </small>
               <small className="eventInput">
-                <input
+                {/* <input
                   onClick={(e) => {
                     seteventTypeId(item.eventTypeId);
-                    console.log("events", e.target.checked);
+                    // console.log("events", e.target.checked);
                     // e.target.checked = true && setselectedEvent(true);
                     const isExist = selectionArray.find(
                       (selectedItme) =>
@@ -120,7 +120,7 @@ function Menu({ JsonData }) {
 
                     // const isLeftSelection = LeftSelection.filter(i => i.extContentTypeId === item.eventTypeId);
 
-                    console.log("LeftSelection", LeftSelection);
+                    // console.log("LeftSelection", LeftSelection);
 
                     // LeftSelection.map((i) => {
                     //   console.log("loh", i.extContentTypeId);
@@ -138,12 +138,12 @@ function Menu({ JsonData }) {
                       ? setselectedEventId(item.extContentTypeId)
                       : setselectedEventId(null);
                     setTimeout(() => {
-                      handleParentClick(e);
+                      // handleParentClick(e);
                     }, 10);
                   }}
                   // onClick={}
                   type="checkbox"
-                />
+                /> */}
               </small>
             </div>
 
@@ -183,9 +183,9 @@ function SubMenu({
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
 
-  console.log("event id: ", eventTypeId, selectedEventId);
-  console.log("JsonData", JsonData);
-  console.log("On subarray selectionArray", selectionArray);
+  // console.log("event id: ", eventTypeId, selectedEventId);
+  // console.log("JsonData", JsonData);
+  // console.log("On subarray selectionArray", selectionArray);
 
   useEffect(() => {}, [selectionArray]);
   return (
@@ -195,6 +195,7 @@ function SubMenu({
           className="singleContainer subContainer"
           key={item.extContentTypeId}
         >
+          {/* <p>{item.hierarchyLevel}</p> */}
           <div className="parent">
             <div className="header">
               <div className="arrow">
@@ -212,6 +213,18 @@ function SubMenu({
               </div>
 
               <small
+                style={{
+                  marginLeft:
+                    item.hierarchyLevel === "L2"
+                      ? "20px"
+                      : "L3"
+                      ? "50px"
+                      : "L4"
+                      ? "30px"
+                      : "L5"
+                      ? "40px"
+                      : "50px",
+                }}
                 className="eventName"
                 onClick={() => {
                   seteventTypeId(item.eventTypeId);
@@ -251,25 +264,20 @@ function SubMenu({
                     true
                   }
                   onChange={(e) => {
-                    handleParentClick(e);
-
-                    const isFind = selectionArray.find(
-                      (i) => i.extContentTypeId === item.extContentTypeId
-                    );
-
-                    !isFind &&
-                      setSelectionArray([
-                        ...selectionArray,
-                        item,
-                        // item.extContentTypeId,
-                      ]);
-
-                    isFind &&
-                      setSelectionArray(
-                        selectionArray.filter(
-                          (i) => i.extContentTypeId !== item.extContentTypeId
-                        )
-                      );
+                    // handleParentClick(e);
+                    // const isFind = selectionArray.find(
+                    //   (i) => i.extContentTypeId === item.extContentTypeId
+                    // );
+                    // !isFind &&
+                    //   setSelectionArray([
+                    //     ...selectionArray,
+                    //     item,
+                    //   ]);
+                    // setSelectionArray(
+                    //   selectionArray.filter(
+                    //     (i) => i.extContentTypeId !== item.extContentTypeId
+                    //   )
+                    // );
                   }}
                   type="checkbox"
                 />
