@@ -172,6 +172,8 @@ function SubMenu({
   console.log("event id: ", eventTypeId, selectedEventId);
   console.log("JsonData", JsonData);
   console.log("On subarray selectionArray", selectionArray);
+
+  useEffect(() => {}, [selectionArray]);
   return (
     <div className="App">
       {JsonData.map((item) => (
@@ -219,14 +221,23 @@ function SubMenu({
                   onChange={(e) => {
                     handleParentClick(e);
 
-                    !selectionArray.find(
+                    const isFind = selectionArray.find(
                       (i) => i.extContentTypeId === item.extContentTypeId
-                    ) &&
+                    );
+
+                    !isFind &&
                       setSelectionArray([
                         ...selectionArray,
                         item,
                         // item.extContentTypeId,
                       ]);
+
+                    isFind &&
+                      setSelectionArray(
+                        selectionArray.filter(
+                          (i) => i.extContentTypeId !== item.extContentTypeId
+                        )
+                      );
                   }}
                   type="checkbox"
                 />
