@@ -91,11 +91,7 @@ function Menu({ JsonData }) {
                       (selectedItme) => selectedItme === item.extContentTypeId
                     );
                     // check exiting  on array or not
-                    !isExist &&
-                      setSelectionArray([
-                        ...selectionArray,
-                        item.extContentTypeId,
-                      ]);
+                    !isExist && setSelectionArray([...selectionArray, item]);
 
                     const LeftSelection =
                       item.parentTypeId === null &&
@@ -128,6 +124,7 @@ function Menu({ JsonData }) {
                   JsonData={JsonData.filter(
                     (item1) => item1.parentTypeId === eventTypeId
                   )}
+                  parentOrigin={item.parentTypeId}
                 />
               )}
 
@@ -141,13 +138,19 @@ function Menu({ JsonData }) {
   );
 }
 
-function SubMenu({ JsonData, setSelectionArray, selectionArray }) {
+function SubMenu({
+  JsonData,
+  setSelectionArray,
+  selectionArray,
+  parentOrigin,
+}) {
   const [eventTypeId, seteventTypeId] = useState(null);
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
 
   console.log("event id: ", eventTypeId, selectedEventId);
   console.log("JsonData", JsonData);
+  console.log("On subarray selectionArray", selectionArray);
   return (
     <div className="App">
       {JsonData.map((item) => (
@@ -183,11 +186,21 @@ function SubMenu({ JsonData, setSelectionArray, selectionArray }) {
               </small>
               <small className="eventInput">
                 <input
+                  checked={
+                    parentOrigin === null &&
+                    selectionArray.find(
+                      (singleFiltered) =>
+                        singleFiltered.extContentTypeId ===
+                        item.extContentTypeId
+                    ) &&
+                    true
+                  }
                   onChange={(e) => {
                     handleParentClick(e);
                     setSelectionArray([
                       ...selectionArray,
-                      item.extContentTypeId,
+                      item,
+                      // item.extContentTypeId,
                     ]);
                   }}
                   type="checkbox"
