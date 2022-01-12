@@ -88,16 +88,37 @@ function Menu({ JsonData }) {
                     seteventTypeId(item.eventTypeId);
                     setselectedEvent(true);
                     const isExist = selectionArray.find(
-                      (selectedItme) => selectedItme === item.extContentTypeId
+                      (selectedItme) =>
+                        selectedItme.extContentTypeId === item.extContentTypeId
                     );
                     // check exiting  on array or not
                     !isExist && setSelectionArray([...selectionArray, item]);
+
+                    isExist &&
+                      setSelectionArray([
+                        selectionArray.filter(
+                          (qsingle) =>
+                            qsingle.extContentTypeId !== item.extContentTypeId
+                        ),
+                      ]);
 
                     const LeftSelection =
                       item.parentTypeId === null &&
                       data.filter((i) => i.parentTypeId === item.eventTypeId);
 
+                    // const isLeftSelection = LeftSelection.filter(i => i.extContentTypeId === item.eventTypeId);
+
                     console.log("LeftSelection", LeftSelection);
+
+                    // LeftSelection.map((i) => {
+                    //   console.log("loh", i.extContentTypeId);
+                    //   const remain = selectionArray.filter(
+                    //     (single) =>
+                    //       single.extContentTypeId !== i.extContentTypeId
+                    //   );
+
+                    //   setSelectionArray([...remain]);
+                    // });
 
                     setSelectionArray([...selectionArray, ...LeftSelection]);
 
@@ -197,11 +218,15 @@ function SubMenu({
                   }
                   onChange={(e) => {
                     handleParentClick(e);
-                    setSelectionArray([
-                      ...selectionArray,
-                      item,
-                      // item.extContentTypeId,
-                    ]);
+
+                    !selectionArray.find(
+                      (i) => i.extContentTypeId === item.extContentTypeId
+                    ) &&
+                      setSelectionArray([
+                        ...selectionArray,
+                        item,
+                        // item.extContentTypeId,
+                      ]);
                   }}
                   type="checkbox"
                 />
