@@ -53,3 +53,9 @@ ul {
 /* .subContainer { */
 /* padding-left: 10%; */
 /* } */
+.spnSpace {
+  width: 10px;
+  height: 10px;
+  padding: 1px;
+  margin: 5px;
+}

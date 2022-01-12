@@ -33,6 +33,7 @@ function handleParentClick(e) {
       });
     } else {
       allInput.forEach((item) => {
+        console.log("item", item);
         item.checked = false;
       });
     }
@@ -46,6 +47,7 @@ function Menu({ JsonData }) {
   const [eventTypeId, seteventTypeId] = useState(null);
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
+  const [count, setCount] = useState(0);
 
   const [selectionArray, setSelectionArray] = useState([]);
 
@@ -81,12 +83,22 @@ function Menu({ JsonData }) {
                 }}
               >
                 {item.eventTypeName}
+                <span className="spnSpace">
+                  (
+                  {
+                    data.filter(
+                      (dataItem) => dataItem.parentTypeId === item.eventTypeId
+                    ).length
+                  }
+                  )
+                </span>
               </small>
               <small className="eventInput">
                 <input
-                  onChange={(e) => {
+                  onClick={(e) => {
                     seteventTypeId(item.eventTypeId);
-                    setselectedEvent(true);
+                    console.log("events", e.target.checked);
+                    // e.target.checked = true && setselectedEvent(true);
                     const isExist = selectionArray.find(
                       (selectedItme) =>
                         selectedItme.extContentTypeId === item.extContentTypeId
@@ -140,6 +152,7 @@ function Menu({ JsonData }) {
               JsonData.filter((item1) => item1.parentTypeId === eventTypeId)
                 .length > 0 && (
                 <SubMenu
+                  setCount={setCount}
                   setSelectionArray={setSelectionArray}
                   selectionArray={selectionArray}
                   JsonData={JsonData.filter(
@@ -164,6 +177,7 @@ function SubMenu({
   setSelectionArray,
   selectionArray,
   parentOrigin,
+  setCount,
 }) {
   const [eventTypeId, seteventTypeId] = useState(null);
   const [selectedEvent, setselectedEvent] = useState(false);
@@ -206,6 +220,24 @@ function SubMenu({
                 }}
               >
                 {item.eventTypeName}
+                <span className="spnSpace">
+                  {data.filter(
+                    (dataItem) => dataItem.parentTypeId === item.eventTypeId
+                  ).length === 0 ? (
+                    ""
+                  ) : (
+                    <span>
+                      (
+                      {
+                        data.filter(
+                          (dataItem) =>
+                            dataItem.parentTypeId === item.eventTypeId
+                        ).length
+                      }
+                      )
+                    </span>
+                  )}
+                </span>
               </small>
               <small className="eventInput">
                 <input
