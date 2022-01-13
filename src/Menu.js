@@ -3,23 +3,19 @@ import data from "./data";
 import { useEffect, useState } from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowDropDown";
-import HierarchyMenu from "./Menu";
 
-function App() {
-  return (
-    <div className="App">
-      <div className="mainSection">
-        <header className="App-header">
-          <h1>Hierarchy Menu</h1>
-
-          {/* <HierarchyMenu /> */}
-
-          <Menu JsonData={data} />
-        </header>
-      </div>
-    </div>
-  );
-}
+// function App() {
+//   return (
+//     <div className="App">
+//       <div className="mainSection">
+//         <header className="App-header">
+//           <h1>Hierarchy Menu</h1>
+//           <Menu JsonData={data} />
+//         </header>
+//       </div>
+//     </div>
+//   );
+// }
 
 // function handleParentClick(e) {
 //   try {
@@ -46,7 +42,7 @@ function App() {
 //   }
 // }
 
-function Menu({ JsonData }) {
+function HierarchyMenu({ JsonData }) {
   //states
   const [eventTypeId, seteventTypeId] = useState(null);
   const [selectedEvent, setselectedEvent] = useState(false);
@@ -54,7 +50,6 @@ function Menu({ JsonData }) {
   const [count, setCount] = useState(0);
 
   const [selectionArray, setSelectionArray] = useState([]);
-  const [selectionResultArray, setSelectionResultArray] = useState([]);
 
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
 
@@ -173,71 +168,6 @@ function Menu({ JsonData }) {
           </div>
         </div>
       ))}
-      <br />
-      <hr />
-      <hr />
-      <h1>Results</h1>
-      <div className="result-main">
-        {selectionResultArray.length !== 0 ? (
-          <div className="showResult">
-            {selectionResultArray.map((item) => (
-              <p>{item.eventTypeName}</p>
-            ))}
-          </div>
-        ) : (
-          <p>No Data You are selected yet</p>
-        )}
-        <div>
-          <input
-            // onChange={(e) => setSearchValue(e.target.value)}
-            type="search"
-            placeholder="Search"
-            className="search"
-          />
-        </div>
-        <br />
-        {selectionArray.map((selection) => (
-          <CheckedResult
-            setSelectionResultArray={setSelectionResultArray}
-            selectionResultArray={selectionResultArray}
-            selection={selection}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CheckedResult({
-  selection,
-  setSelectionResultArray,
-  selectionResultArray,
-}) {
-  return (
-    <div className="result">
-      <input
-        type="checkbox"
-        onChange={(e) => {
-          var isFind = selectionResultArray.find(
-            (singleSelectedItem) =>
-              singleSelectedItem.extContentTypeId === selection.extContentTypeId
-          );
-          // if checked not done before then added into array
-          e.target.checked &&
-            isFind === undefined &&
-            setSelectionResultArray([...selectionResultArray, selection]);
-
-          // else removed from array
-          let filtedArray = selectionResultArray.filter(
-            (singleSelectedItem) =>
-              singleSelectedItem.extContentTypeId !== selection.extContentTypeId
-          );
-
-          e.target.checked === false &&
-            setSelectionResultArray([...filtedArray]);
-        }}
-      />
-      <p>{selection.eventTypeName}</p>
     </div>
   );
 }
@@ -255,25 +185,7 @@ function SubMenu({
 
   // console.log("event id: ", eventTypeId, selectedEventId);
   // console.log("JsonData", JsonData);
-
-  const CheckHandler = (e, item) => {
-    var isFind = selectionArray.find(
-      (singleSelectedItem) =>
-        singleSelectedItem.extContentTypeId === item.extContentTypeId
-    );
-    // if checked not done before then added into array
-    e.target.checked &&
-      isFind === undefined &&
-      setSelectionArray([...selectionArray, item]);
-
-    // else removed from array
-    let filtedArray = selectionArray.filter(
-      (singleSelectedItem) =>
-        singleSelectedItem.extContentTypeId !== item.extContentTypeId
-    );
-
-    e.target.checked === false && setSelectionArray([...filtedArray]);
-  };
+  // console.log("On subarray selectionArray", selectionArray);
 
   useEffect(() => {}, [selectionArray]);
   return (
@@ -299,7 +211,6 @@ function SubMenu({
                   </div>
                 )}
               </div>
-              {/* {item.hierarchyLevel} */}
 
               <small
                 style={{
@@ -312,8 +223,8 @@ function SubMenu({
                       ? "70px"
                       : "L5"
                       ? "90px"
-                      : "L6"
-                      ? "40px"
+                      : "L5"
+                      ? "110px"
                       : "",
                 }}
                 className="eventName"
@@ -345,7 +256,31 @@ function SubMenu({
               </small>
               <small className="eventInput">
                 <input
-                  onChange={(e) => CheckHandler(e, item)}
+                  checked={
+                    parentOrigin === null &&
+                    selectionArray.find(
+                      (singleFiltered) =>
+                        singleFiltered.extContentTypeId ===
+                        item.extContentTypeId
+                    ) &&
+                    true
+                  }
+                  onChange={(e) => {
+                    // handleParentClick(e);
+                    // const isFind = selectionArray.find(
+                    //   (i) => i.extContentTypeId === item.extContentTypeId
+                    // );
+                    // !isFind &&
+                    //   setSelectionArray([
+                    //     ...selectionArray,
+                    //     item,
+                    //   ]);
+                    // setSelectionArray(
+                    //   selectionArray.filter(
+                    //     (i) => i.extContentTypeId !== item.extContentTypeId
+                    //   )
+                    // );
+                  }}
                   type="checkbox"
                 />
               </small>
@@ -359,12 +294,12 @@ function SubMenu({
                   JsonData={data.filter(
                     (item1) => item1.parentTypeId === eventTypeId
                   )}
-                  setCount={setCount}
-                  setSelectionArray={setSelectionArray}
-                  selectionArray={selectionArray}
-                  parentOrigin={item.parentTypeId}
                 />
               )}
+
+            {/* <small style={{ position: "absolute", right: "100px" }}>
+              <input type="checkbox" />
+            </small> */}
           </div>
         </div>
       ))}
@@ -372,4 +307,4 @@ function SubMenu({
   );
 }
 
-export default App;
+export default HierarchyMenu;
