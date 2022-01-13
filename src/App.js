@@ -63,18 +63,45 @@ function Menu({ JsonData }) {
 
   useEffect(() => {}, []);
   const selectionArray2 = searchValue
-    ? selectionArray.filter((selection) =>
+    ? data.filter((selection) =>
         selection.eventTypeName
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       )
-    : selectionArray;
+    : data;
 
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
+
+  const selectionArrayMain = searchValue
+    ? data.filter((selection) =>
+        selection.eventTypeName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      )
+    : initialItem;
 
   useEffect(() => {}, [selectedEventId]);
   console.log("searchValue", searchValue);
   console.log("selectionResultArray", selectionResultArray);
+
+  const CheckHandler = (e, item) => {
+    var isFind = selectionArray.find(
+      (singleSelectedItem) =>
+        singleSelectedItem.extContentTypeId === item.extContentTypeId
+    );
+    // if checked not done before then added into array
+    e.target.checked &&
+      isFind === undefined &&
+      setSelectionArray([...selectionArray, item]);
+
+    // else removed from array
+    let filtedArray = selectionArray.filter(
+      (singleSelectedItem) =>
+        singleSelectedItem.extContentTypeId !== item.extContentTypeId
+    );
+
+    e.target.checked === false && setSelectionArray([...filtedArray]);
+  };
   return (
     <div>
       <div className="App" className="mainSection">
@@ -146,9 +173,9 @@ function Menu({ JsonData }) {
         <div className="result-main">
           <div className="output">
             {/* //output er array */}
-            {selectionResultArray.length !== 0 ? (
+            {selectionArray.length !== 0 ? (
               <div className="showResult">
-                {selectionResultArray.map((item) => (
+                {selectionArray.map((item) => (
                   <p>{item.eventTypeName},</p>
                 ))}
               </div>
@@ -185,7 +212,7 @@ function Menu({ JsonData }) {
               </div>
 
               <br />
-              {selectionArray2.length === 0 ? (
+              {/* {selectionArray2.length === 0 ? (
                 <h1>No result Found </h1>
               ) : (
                 selectionArray2.map((selection) => (
@@ -195,11 +222,140 @@ function Menu({ JsonData }) {
                     selection={selection}
                   />
                 ))
-              )}
+              )} */}
+
+              {searchValue === null
+                ? initialItem.map((item) => (
+                    <div
+                      className="singleContainer"
+                      key={item.extContentTypeId}
+                    >
+                      <div className="parent">
+                        <div className="header">
+                          {data.filter(
+                            (item1) => item1.parentTypeId === item.parentTypeId
+                          ).length > 0 && (
+                            <div className="icon">
+                              {selectedEventId !== item.extContentTypeId ||
+                              selectedEvent !== true ? (
+                                <ArrowRightIcon />
+                              ) : (
+                                <ArrowLeftIcon />
+                              )}
+                            </div>
+                          )}
+
+                          {/* //1st layer data  */}
+                          <small
+                            className="eventName"
+                            onClick={(e) => {
+                              seteventTypeId(item.eventTypeId);
+                              setselectedEvent(!selectedEvent);
+                              setselectedEventId(item.extContentTypeId);
+                            }}
+                          >
+                            {item.eventTypeName}
+                            {data.filter(
+                              (dataItem) =>
+                                dataItem.parentTypeId === item.eventTypeId
+                            ).length > 0 && (
+                              <span className="spnSpace">
+                                (
+                                {
+                                  data.filter(
+                                    (dataItem) =>
+                                      dataItem.parentTypeId === item.eventTypeId
+                                  ).length
+                                }
+                                )
+                              </span>
+                            )}
+                          </small>
+                          <small className="eventInput"></small>
+                        </div>
+
+                        {selectedEventId === item.extContentTypeId &&
+                          selectedEvent &&
+                          JsonData.filter(
+                            (item1) => item1.parentTypeId === eventTypeId
+                          ).length > 0 && (
+                            <SubMenu
+                              setCount={setCount}
+                              setSelectionArray={setSelectionArray}
+                              selectionArray={selectionArray}
+                              JsonData={JsonData.filter(
+                                (item1) => item1.parentTypeId === eventTypeId
+                              )}
+                              parentOrigin={item.parentTypeId}
+                            />
+                          )}
+
+                        {/* <small>
+                      <input type="checkbox" />
+                    </small> */}
+                      </div>
+                    </div>
+                  ))
+                : selectionArrayMain.map((item) => (
+                    <div
+                      className="singleContainer"
+                      key={item.extContentTypeId}
+                    >
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        className="parent"
+                      >
+                        <div className="header">
+                          {/* //1st layer data  */}
+                          <small
+                            className="eventName"
+                            onClick={(e) => {
+                              seteventTypeId(item.eventTypeId);
+                              setselectedEvent(!selectedEvent);
+                              setselectedEventId(item.extContentTypeId);
+                            }}
+                          >
+                            {item.eventTypeName}
+                          </small>
+                          <small className="eventInput"></small>
+
+                          {/* {selectedEventId === item.extContentTypeId &&
+                          selectedEvent &&
+                          JsonData.filter(
+                            (item1) => item1.parentTypeId === eventTypeId
+                          ).length > 0 && (
+                            <SubMenu
+                              setCount={setCount}
+                              setSelectionArray={setSelectionArray}
+                              selectionArray={selectionArray}
+                              JsonData={JsonData.filter(
+                                (item1) => item1.parentTypeId === eventTypeId
+                              )}
+                              parentOrigin={item.parentTypeId}
+                            />
+                          )} */}
+
+                          <small className="eventInput">
+                            <input
+                              onChange={(e) => CheckHandler(e, item)}
+                              type="checkbox"
+                            />
+                          </small>
+                        </div>
+                        {/* <small>
+                    <input type="checkbox" />
+                  </small> */}
+                      </div>
+                    </div>
+                  ))}
             </div>
           )}
         </div>
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 }
