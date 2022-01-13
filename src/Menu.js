@@ -81,15 +81,14 @@ function HierarchyMenu({ JsonData }) {
     : initialItem;
 
   useEffect(() => {}, [selectedEventId]);
-  // console.log("searchValue", searchValue);
-  // console.log("selectionResultArray", selectionResultArray);
+  console.log("searchValue", searchValue);
+  console.log("selectionResultArray", selectionResultArray);
 
   const CheckHandler = (e, item) => {
     var isFind = selectionArray.find(
       (singleSelectedItem) =>
         singleSelectedItem.extContentTypeId === item.extContentTypeId
     );
-
     console.log("Currecnt value ", item);
     // if checked not done before then added into array
     e.target.checked &&
@@ -178,7 +177,7 @@ function HierarchyMenu({ JsonData }) {
             {selectionArray.length !== 0 ? (
               <div className="showResult">
                 {selectionArray.map((item) => (
-                  <p>{item.eventTypeName},</p>
+                  <p key={item.extContentTypeId}>{item.eventTypeName},</p>
                 ))}
               </div>
             ) : (
@@ -186,13 +185,13 @@ function HierarchyMenu({ JsonData }) {
             )}
 
             {toggle ? (
-              <ArrowLeftIcon
+              <ArrowUPIcon
                 onClick={() => {
                   setToggle(!toggle);
                 }}
               />
             ) : (
-              <ArrowUPIcon
+              <ArrowLeftIcon
                 onClick={() => {
                   setToggle(!toggle);
                 }}
@@ -384,6 +383,7 @@ function CheckedResult({
             (singleSelectedItem) =>
               singleSelectedItem.extContentTypeId === selection.extContentTypeId
           );
+
           // if checked not done before then added into array
           e.target.checked &&
             isFind === undefined &&
@@ -423,19 +423,55 @@ function SubMenu({
       (singleSelectedItem) =>
         singleSelectedItem.extContentTypeId === item.extContentTypeId
     );
-    // if checked not done before then added into array
-    e.target.checked &&
-      isFind === undefined &&
-      setSelectionArray([...selectionArray, item]);
+    console.log("Currecnt value ", item);
 
-    // else removed from array
-    let filtedArray = selectionArray.filter(
-      (singleSelectedItem) =>
-        singleSelectedItem.extContentTypeId !== item.extContentTypeId
+    const isInSameArray = selectionArray.find(
+      (item1) => item1.parentTypeId === item.parentTypeId
     );
 
-    e.target.checked === false && setSelectionArray([...filtedArray]);
+    if (isInSameArray === undefined) {
+      e.target.checked &&
+        isFind === undefined &&
+        setSelectionArray([...selectionArray, item]);
+
+      // else removed from array
+      let filtedArray = selectionArray.filter(
+        (singleSelectedItem) =>
+          singleSelectedItem.extContentTypeId !== item.extContentTypeId
+      );
+
+      e.target.checked === false && setSelectionArray([...filtedArray]);
+    }
+
+    if (isInSameArray !== undefined) {
+      e.target.checked &&
+        isFind === undefined &&
+        setSelectionArray([...selectionArray, item]);
+
+      // else removed from array
+      let filtedArray = selectionArray.filter(
+        (singleSelectedItem) =>
+          singleSelectedItem.extContentTypeId !== item.extContentTypeId
+      );
+
+      e.target.checked === false && setSelectionArray([...filtedArray]);
+
+      const removePreviousSelected = selectionArray.filter(
+        (item1) => item1.parentTypeId !== item.parentTypeId
+      );
+
+      // solid  -> removePreviousSelected
+      setSelectionArray([...removePreviousSelected, item]);
+    }
+
+    // console.log("Currecnt isInSameArray.length ", isInSameArray);
+    // isInSameArray.length === 1 && setSelectionArray([...removePreviousSelected]);
+    // console.log("Currecnt selectionArray ", selectionArray);
+
+    // if checked not done before then added into array
   };
+
+  console.log("Currecnt selectionArray ", selectionArray);
 
   useEffect(() => {}, [selectionArray]);
   return (
@@ -510,6 +546,13 @@ function SubMenu({
                 .length === 0 && (
                 <small className="eventInput">
                   <input
+                    checked={
+                      selectionArray.find(
+                        (item1) => item1.eventTypeId === item.eventTypeId
+                      )
+                        ? true
+                        : false
+                    }
                     onChange={(e) => CheckHandler(e, item)}
                     type="checkbox"
                   />
