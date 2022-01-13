@@ -3,12 +3,14 @@ import data from "./data";
 import { useEffect, useState } from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowUPIcon from "@mui/icons-material/ArrowDropUp";
+import SearchIcon from "@mui/icons-material/Search";
 import HierarchyMenu from "./Menu";
 
 function App() {
   return (
     <div className="App">
-      <div className="mainSection">
+      <div>
         <header className="App-header">
           <h1>Hierarchy Menu</h1>
 
@@ -52,157 +54,150 @@ function Menu({ JsonData }) {
   const [selectedEvent, setselectedEvent] = useState(false);
   const [selectedEventId, setselectedEventId] = useState(null);
   const [count, setCount] = useState(0);
+  const [toggle, setToggle] = useState(true);
 
   const [selectionArray, setSelectionArray] = useState([]);
   const [selectionResultArray, setSelectionResultArray] = useState([]);
 
+  const [searchValue, setSearchValue] = useState(null);
+
+  useEffect(() => {}, []);
+  const selectionArray2 = searchValue
+    ? selectionArray.filter((selection) =>
+        selection.eventTypeName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      )
+    : selectionArray;
+
   const initialItem = JsonData.filter((item) => item.parentTypeId === null);
 
   useEffect(() => {}, [selectedEventId]);
-  // console.log("selectionArray by checkbox clickeing ", selectionArray);
+  console.log("searchValue", searchValue);
   return (
-    <div className="App">
-      {initialItem.map((item) => (
-        <div className="singleContainer" key={item.extContentTypeId}>
-          <div className="parent">
-            <div className="header">
-              {data.filter((item1) => item1.parentTypeId === item.parentTypeId)
-                .length > 1 && (
-                <div className="icon">
-                  {selectedEventId !== item.extContentTypeId ||
-                  selectedEvent !== true ? (
-                    <ArrowRightIcon />
-                  ) : (
-                    <ArrowLeftIcon />
-                  )}
-                </div>
-              )}
+    <div>
+      <div className="App" className="mainSection">
+        {initialItem.map((item) => (
+          <div className="singleContainer" key={item.extContentTypeId}>
+            <div className="parent">
+              <div className="header">
+                {data.filter(
+                  (item1) => item1.parentTypeId === item.parentTypeId
+                ).length > 1 && (
+                  <div className="icon">
+                    {selectedEventId !== item.extContentTypeId ||
+                    selectedEvent !== true ? (
+                      <ArrowRightIcon />
+                    ) : (
+                      <ArrowLeftIcon />
+                    )}
+                  </div>
+                )}
 
-              {/* //1st layer data  */}
-              <small
-                className="eventName"
-                onClick={(e) => {
-                  seteventTypeId(item.eventTypeId);
-                  setselectedEvent(!selectedEvent);
-                  setselectedEventId(item.extContentTypeId);
-                }}
-              >
-                {item.eventTypeName}
-                <span className="spnSpace">
-                  (
-                  {
-                    data.filter(
-                      (dataItem) => dataItem.parentTypeId === item.eventTypeId
-                    ).length
-                  }
-                  )
-                </span>
-              </small>
-              <small className="eventInput">
-                {/* <input
+                {/* //1st layer data  */}
+                <small
+                  className="eventName"
                   onClick={(e) => {
                     seteventTypeId(item.eventTypeId);
-                    // console.log("events", e.target.checked);
-                    // e.target.checked = true && setselectedEvent(true);
-                    const isExist = selectionArray.find(
-                      (selectedItme) =>
-                        selectedItme.extContentTypeId === item.extContentTypeId
-                    );
-                    // check exiting  on array or not
-                    !isExist && setSelectionArray([...selectionArray, item]);
-
-                    isExist &&
-                      setSelectionArray([
-                        selectionArray.filter(
-                          (qsingle) =>
-                            qsingle.extContentTypeId !== item.extContentTypeId
-                        ),
-                      ]);
-
-                    const LeftSelection =
-                      item.parentTypeId === null &&
-                      data.filter((i) => i.parentTypeId === item.eventTypeId);
-
-                    // const isLeftSelection = LeftSelection.filter(i => i.extContentTypeId === item.eventTypeId);
-
-                    // console.log("LeftSelection", LeftSelection);
-
-                    // LeftSelection.map((i) => {
-                    //   console.log("loh", i.extContentTypeId);
-                    //   const remain = selectionArray.filter(
-                    //     (single) =>
-                    //       single.extContentTypeId !== i.extContentTypeId
-                    //   );
-
-                    //   setSelectionArray([...remain]);
-                    // });
-
-                    setSelectionArray([...selectionArray, ...LeftSelection]);
-
-                    selectedEventId === null
-                      ? setselectedEventId(item.extContentTypeId)
-                      : setselectedEventId(null);
-                    setTimeout(() => {
-                      // handleParentClick(e);
-                    }, 10);
+                    setselectedEvent(!selectedEvent);
+                    setselectedEventId(item.extContentTypeId);
                   }}
-                  // onClick={}
-                  type="checkbox"
-                /> */}
-              </small>
-            </div>
+                >
+                  {item.eventTypeName}
+                  <span className="spnSpace">
+                    (
+                    {
+                      data.filter(
+                        (dataItem) => dataItem.parentTypeId === item.eventTypeId
+                      ).length
+                    }
+                    )
+                  </span>
+                </small>
+                <small className="eventInput"></small>
+              </div>
 
-            {selectedEventId === item.extContentTypeId &&
-              selectedEvent &&
-              JsonData.filter((item1) => item1.parentTypeId === eventTypeId)
-                .length > 0 && (
-                <SubMenu
-                  setCount={setCount}
-                  setSelectionArray={setSelectionArray}
-                  selectionArray={selectionArray}
-                  JsonData={JsonData.filter(
-                    (item1) => item1.parentTypeId === eventTypeId
-                  )}
-                  parentOrigin={item.parentTypeId}
-                />
-              )}
+              {selectedEventId === item.extContentTypeId &&
+                selectedEvent &&
+                JsonData.filter((item1) => item1.parentTypeId === eventTypeId)
+                  .length > 0 && (
+                  <SubMenu
+                    setCount={setCount}
+                    setSelectionArray={setSelectionArray}
+                    selectionArray={selectionArray}
+                    JsonData={JsonData.filter(
+                      (item1) => item1.parentTypeId === eventTypeId
+                    )}
+                    parentOrigin={item.parentTypeId}
+                  />
+                )}
 
-            {/* <small style={{ position: "absolute", right: "100px" }}>
+              {/* <small style={{ position: "absolute", right: "100px" }}>
               <input type="checkbox" />
             </small> */}
+            </div>
           </div>
-        </div>
-      ))}
-      <br />
-      <hr />
-      <hr />
-      <h1>Results</h1>
-      <div className="result-main">
-        {selectionResultArray.length !== 0 ? (
-          <div className="showResult">
-            {selectionResultArray.map((item) => (
-              <p>{item.eventTypeName}</p>
-            ))}
-          </div>
-        ) : (
-          <p>No Data You are selected yet</p>
-        )}
-        <div>
-          <input
-            // onChange={(e) => setSearchValue(e.target.value)}
-            type="search"
-            placeholder="Search"
-            className="search"
-          />
-        </div>
-        <br />
-        {selectionArray.map((selection) => (
-          <CheckedResult
-            setSelectionResultArray={setSelectionResultArray}
-            selectionResultArray={selectionResultArray}
-            selection={selection}
-          />
         ))}
+      </div>
+
+      <div className="resultSection">
+        <h1>Results</h1>
+        <div className="result-main">
+          <div className="output">
+            {/* //output er array */}
+            {selectionResultArray.length !== 0 ? (
+              <div className="showResult">
+                {selectionResultArray.map((item) => (
+                  <p>{item.eventTypeName},</p>
+                ))}
+              </div>
+            ) : (
+              <p>No Data You are selected yet</p>
+            )}
+
+            {toggle ? (
+              <ArrowLeftIcon
+                onClick={() => {
+                  setToggle(!toggle);
+                }}
+              />
+            ) : (
+              <ArrowUPIcon
+                onClick={() => {
+                  setToggle(!toggle);
+                }}
+              />
+            )}
+          </div>
+          {toggle && (
+            <div>
+              <div className="search">
+                <p>
+                  <SearchIcon />
+                </p>
+                <input
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  type="search"
+                  placeholder="Search"
+                  className="SearchInput"
+                />
+              </div>
+
+              <br />
+              {selectionArray2.length === 0 ? (
+                <h1>No result Found </h1>
+              ) : (
+                selectionArray2.map((selection) => (
+                  <CheckedResult
+                    setSelectionResultArray={setSelectionResultArray}
+                    selectionResultArray={selectionResultArray}
+                    selection={selection}
+                  />
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -216,6 +211,13 @@ function CheckedResult({
   return (
     <div className="result">
       <input
+        checked={
+          selectionResultArray.find(
+            (item) => item.eventTypeId === selection.eventTypeId
+          )
+            ? true
+            : false
+        }
         type="checkbox"
         onChange={(e) => {
           var isFind = selectionResultArray.find(
