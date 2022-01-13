@@ -74,6 +74,7 @@ function Menu({ JsonData }) {
 
   useEffect(() => {}, [selectedEventId]);
   console.log("searchValue", searchValue);
+  console.log("selectionResultArray", selectionResultArray);
   return (
     <div>
       <div className="App" className="mainSection">
