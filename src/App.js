@@ -420,7 +420,52 @@ function SubMenu({
 
   const CheckHandler = (e, item) => {
     // ONLY ONE SELECTION
-    setSelectionArray([item]);
+    // setSelectionArray([item]);
+
+    var isFind = selectionArray.find(
+      (singleSelectedItem) =>
+        singleSelectedItem.extContentTypeId === item.extContentTypeId
+    );
+    console.log("Currecnt value ", item);
+
+    const isInSameArray = selectionArray.find(
+      (item1) => item1.parentTypeId === item.parentTypeId
+    );
+
+    if (isInSameArray === undefined) {
+      e.target.checked &&
+        isFind === undefined &&
+        setSelectionArray([...selectionArray, item]);
+
+      // else removed from array
+      let filtedArray = selectionArray.filter(
+        (singleSelectedItem) =>
+          singleSelectedItem.extContentTypeId !== item.extContentTypeId
+      );
+
+      e.target.checked === false && setSelectionArray([...filtedArray]);
+    }
+
+    if (isInSameArray !== undefined) {
+      e.target.checked &&
+        isFind === undefined &&
+        setSelectionArray([...selectionArray, item]);
+
+      // else removed from array
+      let filtedArray = selectionArray.filter(
+        (singleSelectedItem) =>
+          singleSelectedItem.extContentTypeId !== item.extContentTypeId
+      );
+
+      e.target.checked === false && setSelectionArray([...filtedArray]);
+
+      const removePreviousSelected = selectionArray.filter(
+        (item1) => item1.parentTypeId !== item.parentTypeId
+      );
+
+      // solid  -> removePreviousSelected
+      setSelectionArray([...removePreviousSelected, item]);
+    }
 
     // console.log("Currecnt isInSameArray.length ", isInSameArray);
     // isInSameArray.length === 1 && setSelectionArray([...removePreviousSelected]);
