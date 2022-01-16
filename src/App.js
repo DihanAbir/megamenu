@@ -177,7 +177,17 @@ function Menu({ JsonData }) {
             {selectionArray.length !== 0 ? (
               <div className="showResult">
                 {selectionArray.map((item) => (
-                  <p key={item.extContentTypeId}>{item.eventTypeName},</p>
+                  // <p>okay</p>
+                  <div
+                    style={{
+                      border: "1px solid salmon",
+                      margin: "5px",
+                      padding: "5px",
+                    }}
+                  >
+                    <Result key={item.extContentTypeId} item={item} />
+                  </div>
+                  // <p >{item.eventTypeName},</p>
                 ))}
               </div>
             ) : (
@@ -358,6 +368,26 @@ function Menu({ JsonData }) {
       <br />
       <br />
       <br />
+    </div>
+  );
+}
+
+function Result({ item }) {
+  const parent = data.find((i) => i.eventTypeId === item.parentTypeId);
+  return (
+    <div style={{ display: "flex" }}>
+      <small>
+        {item.eventTypeName}
+        {parent.parentTypeId !== null ? (
+          <span> ----</span>
+        ) : (
+          <span style={{ color: "red", fontSize: "bold", fontSize: "20px" }}>
+            ,
+          </span>
+        )}
+      </small>
+      {/* <p>{parent.eventTypeName}</p> */}
+      {parent.parentTypeId === null ? "" : <Result item={parent} />}
     </div>
   );
 }
